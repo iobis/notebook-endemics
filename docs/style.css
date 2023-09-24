@@ -1,0 +1,8 @@
+.section h2 {
+  padding-top: 90px !important;
+  margin-top: -75px !important;
+}
+
+.tocify-extend-page {
+  height: 0 !important;
+}

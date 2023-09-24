@@ -1,0 +1,21 @@
+name: "g7-plankton"
+output_dir: docs
+exclude: ["eez_gpkg", "eez_h3"]
+navbar:
+  title: "G7 FSOI-GOOS plankton"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "OBIS"
+      href: obis.html
+    - text: "GOOS BioEco"
+      href: goos.html
+output:
+  html_document:  
+    self_contained: no  
+    theme: flatly
+    highlight: tango
+    css: "style.css"
+    toc: true
+    toc_float: true
+    toc_depth: 3

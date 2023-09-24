@@ -1,0 +1,7 @@
+.DS_Store
+.Rhistory
+*.Rproj
+eez_h3
+index_cache
+.Rproj.user
+eez_gpkg
