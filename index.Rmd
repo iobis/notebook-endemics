@@ -6,6 +6,8 @@ editor_options:
 
 The goal of this notebook is to find species which have been detected in only one EEZ according to OBIS.
 
+The code for this notebook is available at <https://github.com/iobis/notebook-endemics>.
+
 ## Species by EEZ
 
 Here we generate species lists by EEZ. We use a dataset of precalculated H3 grid cells by EEZ, which is based on the [Marine Regions](https://marineregions.org/) EEZ layer.
