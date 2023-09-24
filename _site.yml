@@ -1,15 +1,11 @@
-name: "g7-plankton"
+name: "notebook-endemics"
 output_dir: docs
 exclude: ["eez_gpkg", "eez_h3", "output"]
 navbar:
-  title: "G7 FSOI-GOOS plankton"
+  title: "Richness and endemic species by EEZ"
   left:
     - text: "Home"
       href: index.html
-    - text: "OBIS"
-      href: obis.html
-    - text: "GOOS BioEco"
-      href: goos.html
 output:
   html_document:  
     self_contained: no  
