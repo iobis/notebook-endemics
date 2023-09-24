@@ -1,6 +1,6 @@
 name: "g7-plankton"
 output_dir: docs
-exclude: ["eez_gpkg", "eez_h3"]
+exclude: ["eez_gpkg", "eez_h3", "output"]
 navbar:
   title: "G7 FSOI-GOOS plankton"
   left:

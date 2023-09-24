@@ -1,5 +1,5 @@
 ---
-title: "Endemic species by EEZ"
+title: "Richness and endemic species by EEZ"
 editor_options: 
   chunk_output_type: console
 ---
@@ -52,6 +52,11 @@ species_by_eez <- gridded_eez_species %>%
   summarize() %>%
   arrange(eez, species)
 
+eez_richness_stats <- species_by_eez %>%
+  group_by(eez) %>%
+  summarize(n_species = n()) %>%
+  arrange(eez)
+
 endemics <- species_by_eez %>%
   group_by(speciesid, species) %>%
   summarize(n_eez = n(), eez = first(eez)) %>%
@@ -59,9 +64,9 @@ endemics <- species_by_eez %>%
   select(-n_eez) %>%
   arrange(eez, species)
 
-eez_stats <- endemics %>%
+eez_endemics_stats <- endemics %>%
   group_by(eez) %>%
-  summarize(n_species = n())
+  summarize(n_endemics = n())
 ```
 
 ## Export lists
@@ -70,9 +75,18 @@ eez_stats <- endemics %>%
 write.csv(endemics, "output/endemics.csv", row.names = FALSE, na = "")
 ```
 
+## Export statistics
+
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
+stats <- eez_richness_stats %>%
+  left_join(eez_endemics_stats, by = "eez")
+
+write.csv(stats, "output/stats.csv", row.names = FALSE, na = "")
+```
+
 ## Visualize
 
-```{r, message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=8, cache=TRUE}
+```{r, message=FALSE, warning=FALSE, cache=TRUE}
 library(sf)
 library(ggplot2)
 library(viridis)
@@ -84,14 +98,44 @@ sf_use_s2(FALSE)
 eezs <- read_sf("eez_gpkg/eez_v11.gpkg") %>%
   select(GEONAME) %>%
   st_simplify(0.05, preserveTopology = FALSE) %>%
-  left_join(eez_stats, by = c("GEONAME" = "eez"))
+  left_join(stats, by = c("GEONAME" = "eez"))
 
 world <- ne_countries(scale = "medium", returnclass = "sf")
+```
 
+### Richness
+
+```{r, message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=8, cache=TRUE}
 ggplot() +
   geom_sf(data = eezs, aes_string(fill = "n_species", color = "n_species", geometry = "geom"), lwd = 0.04) +
   scale_color_viridis(option = "inferno", na.value = "white", name = "Number of species", trans = "log10", guide = "none") +
   scale_fill_viridis(option = "inferno", na.value = "white", name = "Number of species", trans = "log10", labels = scales::comma) +
+  geom_sf(data = world, fill = "#dddddd", color = "#888888", lwd = 0.1) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(), 
+    panel.background = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    legend.position = "bottom",
+    legend.key.width = unit(2, "cm")
+  ) +
+  xlab("") + ylab("") +
+  coord_sf(crs = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs" )
+```
+
+### Endemics
+
+```{r, message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=8, cache=TRUE}
+ggplot() +
+  geom_sf(data = eezs, aes_string(fill = "n_endemics", color = "n_endemics", geometry = "geom"), lwd = 0.04) +
+  scale_color_viridis(option = "inferno", na.value = "white", name = "Number of endemics", trans = "log10", guide = "none") +
+  scale_fill_viridis(option = "inferno", na.value = "white", name = "Number of endemics", trans = "log10", labels = scales::comma) +
   geom_sf(data = world, fill = "#dddddd", color = "#888888", lwd = 0.1) +
   theme(
     panel.grid.major.x = element_blank(),
